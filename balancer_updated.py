@@ -54,15 +54,12 @@ class Balancer:
     # C2H5OH + O2 = CO2 + H2O
 
     def parse_equation(self, raw_equation: str):
-        print(raw_equation)
         if '=' in raw_equation:
             equation = [x.strip() for x in raw_equation.split('=')]
         else:
             equation = [x.strip() for x in raw_equation.split('->')]
         reactants = [x.strip() for x in equation[0].split('+')]
         products = [x.strip() for x in equation[1].split('+')]
-        print(reactants)
-        print(products)
         return reactants, products
     
     def balance_equation(self, raw_equation: str):
