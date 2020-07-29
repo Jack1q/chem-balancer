@@ -1,4 +1,5 @@
 from sympy import *
+import json
 
 # ~ Updated Version ~
 #!~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~!#
@@ -6,23 +7,22 @@ from sympy import *
 # Author: Jack Donofrio
 # Creation Date: January 5th 2019
 # 
-# Updated July 24 2020
-# Version: 1.0.2
+# Updated July 29 2020
+# Version: 1.0.3
 #!~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~!#
 
-class Balancer:
+class SpeciesHandler:
     def add_to_dict(self, dict, item_to_add, value):
         if item_to_add not in dict:
             dict[item_to_add] = value
         else:
             dict[item_to_add] = dict[item_to_add] + value
-
-    def handle_species(self, species):
+    def get_species_data(self, species):
         elements = {}
         for i in range(len(species)):
             if species[i] == '(': 
                 value_enclosed = species[i + 1 : species[i+1:].index(')') + i + 1]
-                elements_in_parentheses = self.handle_species(value_enclosed)
+                elements_in_parentheses = self.get_species_data(value_enclosed)
                 i = species[i+1:].index(')') + i + 1
                 if i + 1 < len(species) and species[i+1].isdigit():
                     subscript = int(species[i+1])
@@ -46,7 +46,17 @@ class Balancer:
                     else:
                         self.add_to_dict(elements, species[i], 1)
         return elements
+    
+    def get_molar_mass(self, species):
+        molar_masses = json.load(open('molarmasses.json'))
+        species_data = self.get_species_data(species)
+        molar_mass = 0
+        for element in species_data:
+            molar_mass += species_data[element] * molar_masses[element]
+        return round(molar_mass,3)
 
+
+class Balancer:
 
     # Equations should be received in the form:
     # C2H5OH + O2 -> CO2 + H2O
@@ -79,7 +89,8 @@ class Balancer:
 
         set_of_elements = set()
         for reactant in reactants:
-            elements = self.handle_species(reactant).keys()
+            # elements = self.handle_species(reactant).keys()
+            elements = SpeciesHandler().get_species_data(reactant).keys()
             for element in elements:
                 set_of_elements.add(element)
         
@@ -92,13 +103,15 @@ class Balancer:
 
             for reactant in reactant_dict:
                 if element in reactant_dict[reactant]:
-                    species_data = self.handle_species(reactant_dict[reactant])
+                    species_data = SpeciesHandler().get_species_data(reactant_dict[reactant])
+                    # species_data = self.handle_species(reactant_dict[reactant])
                     if element in species_data:
                         reactant_expressions_for_element.append(f'{species_data[element]} * {reactant}')
             
             for product in product_dict:
                 if element in product_dict[product]:
-                    species_data = self.handle_species(product_dict[product])
+                    species_data = SpeciesHandler().get_species_data(product_dict[product])
+                    # species_data = self.handle_species(product_dict[product])
                     if element in species_data:
                         product_expressions_for_element.append(f'{species_data[element]} * {product}')
             

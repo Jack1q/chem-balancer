@@ -1,6 +1,8 @@
-from balancer_updated import Balancer
+from balancer_updated import Balancer, SpeciesHandler
 
 bl = Balancer()
+sp = SpeciesHandler()
+
 
 def species_tests():
     species_a = 'KHCO3'
@@ -8,12 +10,20 @@ def species_tests():
     species_c = 'Ca(OH)2'
     species_d = 'PtCl2(NH3)2'
     species_e = 'Fe(H2O)4(OH)2'
- 
-    assert bl.handle_species(species_a) == {'K' : 1, 'H' : 1, 'C' : 1, 'O' : 3}
-    assert bl.handle_species(species_b) == {'C' : 2, 'H' : 6, 'O' : 1}
-    assert bl.handle_species(species_c) == {'Ca' : 1, 'O' : 2, 'H' : 2}
-    assert bl.handle_species(species_d) == {'Pt' : 1, 'Cl' : 2, 'N' : 2, 'H' : 6}
-    assert bl.handle_species(species_e) == {'Fe' : 1, 'H' : 10, 'O' : 6}
+
+    # species handling tests
+    assert sp.get_species_data(species_a) == {'K' : 1, 'H' : 1, 'C' : 1, 'O' : 3}
+    assert sp.get_species_data(species_b) == {'C' : 2, 'H' : 6, 'O' : 1}
+    assert sp.get_species_data(species_c) == {'Ca' : 1, 'O' : 2, 'H' : 2}
+    assert sp.get_species_data(species_d) == {'Pt' : 1, 'Cl' : 2, 'N' : 2, 'H' : 6}
+    assert sp.get_species_data(species_e) == {'Fe' : 1, 'H' : 10, 'O' : 6}
+
+    # molar mass tests
+    assert sp.get_molar_mass(species_a) == 100.114
+    assert sp.get_molar_mass(species_b) == 46.069
+    assert sp.get_molar_mass(species_c) == 74.092
+    assert sp.get_molar_mass(species_d) == 300.046
+    assert sp.get_molar_mass(species_e) == 161.919
 
 
 def two_two_tests():
