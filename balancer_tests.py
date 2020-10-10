@@ -1,4 +1,4 @@
-from balancer_updated import Balancer, SpeciesHandler
+from balancer import Balancer, SpeciesHandler
 
 bl = Balancer()
 sp = SpeciesHandler()
@@ -24,7 +24,6 @@ def species_tests():
     assert sp.get_molar_mass(species_c) == 74.092
     assert sp.get_molar_mass(species_d) == 300.046
     assert sp.get_molar_mass(species_e) == 161.919
-
 
 def two_two_tests():
     rxn_a = 'Br2 + KI -> KBr + I2'
